@@ -1,26 +1,25 @@
 #!/usr/bin/env bash
 
 ################################################################################
-# throb-widget.sh
+# throb-widget.sh v1.0.0
 #
 # single-character pulsing animation, source this file or copy it inline
+# (q.v. https://github.com/kami-lel/bash-throb-widget)
 ################################################################################
 
-# TODO add version & github link
 
-
-# constants  ###################################################################
+# constants  ===================================================================
 # BUG unprefixed globals collide w/ any Caller Variable of the same name, unlike every other name in this file
 FRAMES_PULSE=('░' '▒' '▓' '█' '▓' '▒')
 FRAMES_PULSE_ASCII=('.' 'o' 'O' '@' 'O' 'o')
 
 
-# private variables  ###########################################################
+# private variables  ===========================================================
 _throb_widget_idx=${_throb_widget_idx:-0}  # BUG comment claims this persists across calls, but the increment runs inside the forked subshell so the caller's copy never changes
 _throb_widget_pid=""  # BUG unconditional reset drops a running pid when re-sourced, then throb_widget_stop no-ops while the loop keeps animating
 
 
-# private methods  #############################################################
+# private methods  =============================================================
 # FIXME throb_widget_is_utf8_locale and throb_widget_get_frame share the throb_widget_ prefix with the Public API, making them indistinguishable to a Caller reading the sourced namespace
 
 # throb_widget_is_utf8_locale()
@@ -58,7 +57,7 @@ throb_widget_get_frame() {
     return 0
 }
 
-# Public API  ##################################################################
+# Public API  ==================================================================
 
 # throb_widget_start()
 #
@@ -87,7 +86,7 @@ throb_widget_get_frame() {
 #   backspace but the first, until throb_widget_stop runs or the caller's
 #   process exits
 throb_widget_start() {  # ------------------------------------------------------
-    local interval="${1:-0.2}"  # BUG no validation, a non-numeric value makes sleep exit immediately and turns the loop into a busy loop flooding stderr
+    local interval="${1:-0.2}"
 
     if [[ -n "${_throb_widget_pid}" ]]; then
         return 0  # throb already running
@@ -135,3 +134,7 @@ throb_widget_stop() {  # -------------------------------------------------------
     _throb_widget_pid=""
     return 0
 }
+
+
+
+# END of throb-widget.sh  ######################################################
