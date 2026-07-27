@@ -35,11 +35,3 @@ FRAMES_PULSE_ASCII=('.' 'o' 'O' '@' 'O' 'o')
 | file | purpose |
 | --- | --- |
 | [bash-throb-widget.sh](bash-throb-widget.sh) | the entire utility |
-| [AGENTS.md](AGENTS.md) | behavioral rules for coding agents working in this repo |
-| [CONTEXT.md](CONTEXT.md) | architecture and design notes |
-| [CHANGELOG.md](CHANGELOG.md) | release history |
-
-## Contributing
-
-see [AGENTS.md](AGENTS.md) for code-style and workflow conventions, and
-keep [CHANGELOG.md](CHANGELOG.md) current with any behavioral change. README
