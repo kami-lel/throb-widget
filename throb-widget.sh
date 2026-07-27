@@ -45,8 +45,11 @@ throb_widget_start() {  # -----------------------------------------------------
         return  # throb already running
     fi
 
+    local owner="${BASHPID:-$$}"  # caller's process, the loop's lifetime bound
+
     (
-        while true; do
+        # stop as soon as the owner is gone, no trap needed on either side
+        while kill -0 "${owner}" 2>/dev/null; do
             printf '\r'
             throb_widget_get_frame
             sleep "${interval}"
