@@ -12,5 +12,5 @@ source "${SCRIPT_DIR}/throb-widget.sh"
 echo "The Program is Currently Running:"
 
 throb_widget_start 0.15
-sleep 10
+sleep 5
 throb_widget_stop
