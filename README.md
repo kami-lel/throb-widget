@@ -36,3 +36,7 @@ See [throb-widget-demo.sh](throb-widget-demo.sh) for a runnable demo.
 | --- | --- |
 | [throb-widget.sh](throb-widget.sh) | the entire utility |
 | [throb-widget-demo.sh](throb-widget-demo.sh) | 10-second demo of the throb widget |
+
+<!-- FIXME the demo runs for 5 seconds since commit 870c5ea, this row and the CHANGELOG.md Added entry were left at the old figure -->
+<!-- TODO no LICENSE file exists, yet this file and CONTEXT.md instruct users to copy the source directly into their own scripts with no grant behind that usage -->
+<!-- BUG throb_widget_start "animates on stderr" per line 26 above, but throb-widget.sh writes a leading carriage return before every frame that overwrites the first character of an existing line, breaking the inline-splice claim made at line 11 -->

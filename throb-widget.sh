@@ -10,16 +10,18 @@
 
 
 # constants  ###################################################################
+# BUG unprefixed globals collide w/ any Caller Variable of the same name, unlike every other name in this file
 FRAMES_PULSE=('░' '▒' '▓' '█' '▓' '▒')
 FRAMES_PULSE_ASCII=('.' 'o' 'O' '@' 'O' 'o')
 
 
 # private variables  ###########################################################
-_throb_widget_idx=${_throb_widget_idx:-0}  # frame idx, private to the subshell
-_throb_widget_pid=""  # pid of the throb loop, empty means not running
+_throb_widget_idx=${_throb_widget_idx:-0}  # BUG comment claims this persists across calls, but the increment runs inside the forked subshell so the caller's copy never changes
+_throb_widget_pid=""  # BUG unconditional reset drops a running pid when re-sourced, then throb_widget_stop no-ops while the loop keeps animating
 
 
 # private methods  #############################################################
+# FIXME throb_widget_is_utf8_locale and throb_widget_get_frame share the throb_widget_ prefix with the Public API, making them indistinguishable to a Caller reading the sourced namespace
 
 # throb_widget_is_utf8_locale()
 #
@@ -80,7 +82,7 @@ throb_widget_get_frame() {
 #   one frame plus a leading carriage return to stderr, every INTERVAL
 #   seconds, until throb_widget_stop runs or the caller's process exits
 throb_widget_start() {  # ------------------------------------------------------
-    local interval="${1:-0.1}"
+    local interval="${1:-0.1}"  # BUG no validation, a non-numeric value makes sleep exit immediately and turns the loop into a busy loop flooding stderr
 
     if [[ -n "${_throb_widget_pid}" ]]; then
         return 0  # throb already running
@@ -89,13 +91,14 @@ throb_widget_start() {  # ------------------------------------------------------
     local owner="${BASHPID:-$$}"  # caller's process, the loop's lifetime bound
 
     (
+        # BUG no trap on EXIT/INT/TERM anywhere in this file, so a caller that exits without calling throb_widget_stop leaves this loop orphaned and reparented to init
         # stop as soon as the owner is gone, no trap needed on either side
         while kill -0 "${owner}" 2>/dev/null; do
-            printf '\r'
+            printf '\r'  # BUG returns cursor to column 0 and overwrites the first character of whatever the caller already printed, breaking the inline-splice promise
             throb_widget_get_frame
             sleep "${interval}"
         done
-    ) >&2 &
+    ) >&2 &  # BUG frames land in redirected/non-terminal stderr as raw control bytes, and this fork also prints an unsuppressed job-control notice when sourced into an interactive shell
     _throb_widget_pid=$!
     return 0
 }
@@ -119,7 +122,7 @@ throb_widget_stop() {  # -------------------------------------------------------
 
     kill "${_throb_widget_pid}" 2>/dev/null || true
     wait "${_throb_widget_pid}" 2>/dev/null || true
-    printf '\r' >&2
+    printf '\r' >&2  # BUG repositions the cursor but erases nothing, so the last frame drawn stays on screen until unrelated output happens to cover column 0
     _throb_widget_pid=""
     return 0
 }
