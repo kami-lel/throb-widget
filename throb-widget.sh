@@ -72,6 +72,10 @@ throb_widget_get_frame() {
 # calling this while a throb already runs does nothing. the loop also ends on
 # its own once the caller's process is gone, so a missing stop leaks no process
 #
+# draws inline: the first frame lands wherever the caller's cursor already is,
+# and every frame after backs up one column first, so only that one column
+# is ever touched, no matter what the caller printed before it
+#
 # USAGE:
 #   throb_widget_start [INTERVAL]
 #
@@ -79,8 +83,9 @@ throb_widget_get_frame() {
 #   [INTERVAL]  seconds between frames, default 0.1
 #
 # OUTPUT:
-#   one frame plus a leading carriage return to stderr, every INTERVAL
-#   seconds, until throb_widget_stop runs or the caller's process exits
+#   one frame character to stderr every INTERVAL seconds, each preceded by a
+#   backspace but the first, until throb_widget_stop runs or the caller's
+#   process exits
 throb_widget_start() {  # ------------------------------------------------------
     local interval="${1:-0.1}"  # BUG no validation, a non-numeric value makes sleep exit immediately and turns the loop into a busy loop flooding stderr
 
@@ -93,8 +98,12 @@ throb_widget_start() {  # ------------------------------------------------------
     (
         # BUG no trap on EXIT/INT/TERM anywhere in this file, so a caller that exits without calling throb_widget_stop leaves this loop orphaned and reparented to init
         # stop as soon as the owner is gone, no trap needed on either side
+        local first_frame=1
         while kill -0 "${owner}" 2>/dev/null; do
-            printf '\r'  # BUG returns cursor to column 0 and overwrites the first character of whatever the caller already printed, breaking the inline-splice promise
+            if (( ! first_frame )); then
+                printf '\b'  # back up onto the previous frame's column, nothing else on the line is touched
+            fi
+            first_frame=0
             throb_widget_get_frame
             sleep "${interval}"
         done
@@ -105,16 +114,16 @@ throb_widget_start() {  # ------------------------------------------------------
 
 # throb_widget_stop()
 #
-# stop the throb and return the cursor to column 0
+# stop the throb and erase its last drawn frame
 #
-# does nothing when no throb is running. the last frame drawn stays on screen,
-# the caller's next write to that column covers it
+# does nothing when no throb is running. the cursor is left exactly where the
+# frame was drawn, now blank, so the caller's next write picks up right there
 #
 # USAGE:
 #   throb_widget_stop
 #
 # OUTPUT:
-#   a carriage return to stderr
+#   a backspace, a space, then a backspace, to stderr
 throb_widget_stop() {  # -------------------------------------------------------
     if [[ -z "${_throb_widget_pid}" ]]; then
         return 0  # no throb running
@@ -122,7 +131,7 @@ throb_widget_stop() {  # -------------------------------------------------------
 
     kill "${_throb_widget_pid}" 2>/dev/null || true
     wait "${_throb_widget_pid}" 2>/dev/null || true
-    printf '\r' >&2  # BUG repositions the cursor but erases nothing, so the last frame drawn stays on screen until unrelated output happens to cover column 0
+    printf '\b \b' >&2  # back onto the frame column, blank it, then back up again so the cursor rests there
     _throb_widget_pid=""
     return 0
 }

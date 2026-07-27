@@ -13,13 +13,13 @@ source "${SCRIPT_DIR}/throb-widget.sh"
 
 echo "Mocking Connecting Remote Server:"
 
-printf "Connecting "
+printf "Connecting"
 # Step 2: start throb, 0.15s per frame, on stderr
 throb_widget_start 0.15
 
 sleep 5  # stand-in for the wrapped work
 
-# Step 3: stop throb, rtn cursor to Column 0
+# Step 3: stop throb, return cursor to Column 0
 throb_widget_stop
 
-echo "Finished Mocking Connection after 5 second"
+printf "\nFinished Mocking Connection after 5 second\n"
