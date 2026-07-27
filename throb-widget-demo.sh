@@ -8,6 +8,6 @@ source "${SCRIPT_DIR}/throb-widget.sh"
 
 echo "The Program is Currently Running:"
 
-start_throb 0.15
+throb_widget_start 0.15
 sleep 10
-stop_throb
+throb_widget_stop

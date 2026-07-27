@@ -5,8 +5,7 @@
 ## [Unreleased]
 
 ### Added
-- `get_throb_frame`, a single-character throb generator with a Unicode/ASCII fallback pair
-- `start_throb` / `stop_throb`, a background async pair for animating while the caller is blocked on a foreground command
+- `throb_widget_start` / `throb_widget_stop`, the two public functions; a background async pair for animating while the caller is blocked on a foreground command
 - `throb-widget-demo.sh`, a 10-second demo of the throb widget
 
 ### Changed

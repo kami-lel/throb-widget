@@ -17,22 +17,13 @@ is still alive.
 - **source it** — `source throb-widget.sh` from your own script
 - **inline it** — copy the full contents of [throb-widget.sh](throb-widget.sh) into your own script
 
-Call the generator inline, in a loop you control:
+The public API is two functions — start the throb before a foreground
+command, stop it after:
 
 ```bash
-while true; do
-    printf '\r'
-    get_throb_frame  # call directly, "$(get_throb_frame)" would run it in a subshell and lose the frame index
-    sleep 0.1
-done
-```
-
-Or run it in the background while a foreground command blocks:
-
-```bash
-start_throb 0.1   # animates on stderr
+throb_widget_start 0.1   # animates on stderr
 curl -s "$url" > /dev/null
-stop_throb
+throb_widget_stop
 ```
 
 See [throb-widget-demo.sh](throb-widget-demo.sh) for a runnable demo.

@@ -43,14 +43,15 @@ throb-widget/
     light → dark → light
   - `FRAMES_PULSE_ASCII=('.' 'o' 'O' '@' 'O' 'o')` — ASCII fallback with the
     same ramp shape and frame count
-- **two ways to drive the throb**:
-  - `get_throb_frame` — pure generator, prints the next frame and advances
-    `THROB_IDX`; the caller owns the loop and timing, so this composes into
-    any existing line of output
-  - `start_throb [interval]` / `stop_throb` — forks a background subshell
-    that calls `get_throb_frame` in a loop, for animating on stderr while
-    the caller is blocked on a foreground command; `_throb_pid` tracks the
-    running loop so a second `start_throb` while one is active is a no-op
+- **only two public functions** — `throb_widget_start [interval]` and
+  `throb_widget_stop`; every other function is private and must be
+  prefixed `throb_widget_` (eg `throb_widget_get_frame`,
+  `throb_widget_is_utf8_locale`)
+- **background by design** — `throb_widget_start` forks a subshell that
+  calls the private `throb_widget_get_frame` in a loop, printing to
+  stderr, so the throb animates on its own while the caller is blocked on
+  a foreground command; `_throb_widget_pid` tracks the running loop so a
+  second `throb_widget_start` while one is active is a no-op
 
 ## Known Gaps & Constraints
 

@@ -15,6 +15,7 @@ single-file, dual-usage requirement.
 ## Code Style
 
 - keep the entire utility inside [throb-widget.sh](throb-widget.sh) — the script must remain valid both when *sourced* and when its contents are *pasted verbatim* into a caller script, so avoid `set -e`, `exit`, or anything that would alter a caller's shell options or terminate a caller's process
+- only `throb_widget_start` and `throb_widget_stop` are public; every other function is private and its name must start with `throb_widget_`
 - each animation frame must be a single character — do not widen `FRAMES_PULSE` or `FRAMES_PULSE_ASCII` to multi-character frames
 - keep the Unicode frame set (`FRAMES_PULSE`) and the ASCII fallback (`FRAMES_PULSE_ASCII`) in sync — same frame count, same pulse shape
 
