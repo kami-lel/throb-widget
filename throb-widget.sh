@@ -87,7 +87,7 @@ throb_widget_get_frame() {
 #   backspace but the first, until throb_widget_stop runs or the caller's
 #   process exits
 throb_widget_start() {  # ------------------------------------------------------
-    local interval="${1:-0.1}"  # BUG no validation, a non-numeric value makes sleep exit immediately and turns the loop into a busy loop flooding stderr
+    local interval="${1:-0.2}"  # BUG no validation, a non-numeric value makes sleep exit immediately and turns the loop into a busy loop flooding stderr
 
     if [[ -n "${_throb_widget_pid}" ]]; then
         return 0  # throb already running

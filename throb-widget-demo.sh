@@ -14,8 +14,8 @@ source "${SCRIPT_DIR}/throb-widget.sh"
 echo "Mocking Connecting Remote Server:"
 
 printf "Connecting"
-# Step 2: start throb, 0.15s per frame, on stderr
-throb_widget_start 0.15
+# Step 2: start throb, on stderr
+throb_widget_start
 
 sleep 5  # stand-in for the wrapped work
 
