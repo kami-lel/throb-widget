@@ -3,6 +3,9 @@
 #
 # demo of throb-widget.sh, runs the throb animation for 10 seconds
 
+
+# FIXME rewrite demo w/ better comments
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/throb-widget.sh"
 

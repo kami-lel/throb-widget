@@ -6,6 +6,10 @@
 # single-character pulsing animation, source this file or copy it inline
 ################################################################################
 
+
+
+# FIXME rewrite w/ copy & paste
+
 # constants  ###################################################################
 FRAMES_PULSE=('░' '▒' '▓' '█' '▓' '▒')
 FRAMES_PULSE_ASCII=('.' 'o' 'O' '@' 'O' 'o')

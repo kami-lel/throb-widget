@@ -1,5 +1,7 @@
 # throb-widget README
 
+<!-- TODO rewrite readme -->
+
 a tiny bash utility for a single-character "throb" (pulsing) animation —
 drop one character into any line of output to show a long-running program
 is still alive.
