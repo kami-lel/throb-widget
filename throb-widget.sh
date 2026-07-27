@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-#
+
 ################################################################################
 # throb-widget.sh
 #
 # single-character pulsing animation, source this file or copy it inline
 ################################################################################
+
+# TODO add version & github link
 
 
 # constants  ###################################################################

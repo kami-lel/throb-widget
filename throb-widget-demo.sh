@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# throb-widget-demo.sh
+
+################################################################################ throb-widget-demo.sh
 #
-# demo of throb-widget.sh, runs the throb animation for 10 seconds
+# demo of throb-widget.sh, runs the throb animation for 5 seconds
+################################################################################ throb-widget-demo.sh
 
 
 # FIXME rewrite demo w/ better comments
