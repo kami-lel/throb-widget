@@ -8,10 +8,18 @@
 
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${SCRIPT_DIR}/throb-widget.sh"  # step 1: source the library
+# Step 1: source the library
+source "${SCRIPT_DIR}/throb-widget.sh"
 
-echo "The Program is Currently Running:"
+echo "Mocking Connecting Remote Server:"
 
-throb_widget_start 0.15  # step 2: start throb, 0.15s per frame, on stderr
+printf "Connecting "
+# Step 2: start throb, 0.15s per frame, on stderr
+throb_widget_start 0.15
+
 sleep 5  # stand-in for the wrapped work
-throb_widget_stop  # step 3: stop throb, rtn cursor to Column 0
+
+# Step 3: stop throb, rtn cursor to Column 0
+throb_widget_stop
+
+echo "Finished Mocking Connection after 5 second"

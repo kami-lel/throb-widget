@@ -1,7 +1,5 @@
 # throb-widget CHANGELOG
 
-<!-- TODO gap review -->
-
 [^format]
 
 ## [Unreleased]
