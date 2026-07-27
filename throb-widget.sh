@@ -3,20 +3,19 @@
 ################################################################################
 # throb-widget.sh v1.0.0
 #
-# single-character pulsing animation, source this file or copy it inline
-# (q.v. https://github.com/kami-lel/bash-throb-widget)
+# single-character pulsing animation, source this file or copy it inline<
+# q.v. https://github.com/kami-lel/bash-throb-widget
 ################################################################################
 
 
 # constants  ===================================================================
-# BUG unprefixed globals collide w/ any Caller Variable of the same name, unlike every other name in this file
-FRAMES_PULSE=('░' '▒' '▓' '█' '▓' '▒')
-FRAMES_PULSE_ASCII=('.' 'o' 'O' '@' 'O' 'o')
+THROB_WIDGET_FRAMES_PULSE=('░' '▒' '▓' '█' '▓' '▒')
+THROB_WIDGET_FRAMES_PULSE_ASCII=('.' 'o' 'O' '@' 'O' 'o')
 
 
 # private variables  ===========================================================
-_throb_widget_idx=${_throb_widget_idx:-0}  # BUG comment claims this persists across calls, but the increment runs inside the forked subshell so the caller's copy never changes
-_throb_widget_pid=""  # BUG unconditional reset drops a running pid when re-sourced, then throb_widget_stop no-ops while the loop keeps animating
+throb_widget_idx=${throb_widget_idx:-0}  # BUG comment claims this persists across calls, but the increment runs inside the forked subshell so the caller's copy never changes
+throb_widget_pid=""  # BUG unconditional reset drops a running pid when re-sourced, then throb_widget_stop no-ops while the loop keeps animating
 
 
 # private methods  =============================================================
@@ -27,8 +26,8 @@ _throb_widget_pid=""  # BUG unconditional reset drops a running pid when re-sour
 # succeed when the locale is UTF-8, which selects the Unicode frame set
 #
 # RETURN:
-#   0  locale is UTF-8, caller should use FRAMES_PULSE
-#   1  locale is not UTF-8, caller should use FRAMES_PULSE_ASCII
+#   0  locale is UTF-8, caller should use THROB_WIDGET_FRAMES_PULSE
+#   1  locale is not UTF-8, caller should use THROB_WIDGET_FRAMES_PULSE_ASCII
 throb_widget_is_utf8_locale() {
     local loc="${LC_ALL:-${LC_CTYPE:-${LANG:-}}}"
     [[ "${loc}" == *UTF-8* || "${loc}" == *utf8* ]]
@@ -38,8 +37,8 @@ throb_widget_is_utf8_locale() {
 #
 # print the current frame, one character with no newline, then advance
 #
-# picks FRAMES_PULSE or FRAMES_PULSE_ASCII via throb_widget_is_utf8_locale,
-# every call
+# picks THROB_WIDGET_FRAMES_PULSE or THROB_WIDGET_FRAMES_PULSE_ASCII via
+# throb_widget_is_utf8_locale, every call
 #
 # OUTPUT:
 #   one frame character to stdout, no trailing newline
@@ -47,13 +46,13 @@ throb_widget_get_frame() {
     local -a frames
 
     if throb_widget_is_utf8_locale; then
-        frames=("${FRAMES_PULSE[@]}")
+        frames=("${THROB_WIDGET_FRAMES_PULSE[@]}")
     else
-        frames=("${FRAMES_PULSE_ASCII[@]}")
+        frames=("${THROB_WIDGET_FRAMES_PULSE_ASCII[@]}")
     fi
 
-    printf '%s' "${frames[_throb_widget_idx]}"
-    _throb_widget_idx=$(( (_throb_widget_idx + 1) % ${#frames[@]} ))
+    printf '%s' "${frames[throb_widget_idx]}"
+    throb_widget_idx=$(( (throb_widget_idx + 1) % ${#frames[@]} ))
     return 0
 }
 
@@ -88,7 +87,7 @@ throb_widget_get_frame() {
 throb_widget_start() {  # ------------------------------------------------------
     local interval="${1:-0.2}"
 
-    if [[ -n "${_throb_widget_pid}" ]]; then
+    if [[ -n "${throb_widget_pid}" ]]; then
         return 0  # throb already running
     fi
 
@@ -107,7 +106,7 @@ throb_widget_start() {  # ------------------------------------------------------
             sleep "${interval}"
         done
     ) >&2 &  # BUG frames land in redirected/non-terminal stderr as raw control bytes, and this fork also prints an unsuppressed job-control notice when sourced into an interactive shell
-    _throb_widget_pid=$!
+    throb_widget_pid=$!
     return 0
 }
 
@@ -124,14 +123,14 @@ throb_widget_start() {  # ------------------------------------------------------
 # OUTPUT:
 #   a backspace, a space, then a backspace, to stderr
 throb_widget_stop() {  # -------------------------------------------------------
-    if [[ -z "${_throb_widget_pid}" ]]; then
+    if [[ -z "${throb_widget_pid}" ]]; then
         return 0  # no throb running
     fi
 
-    kill "${_throb_widget_pid}" 2>/dev/null || true
-    wait "${_throb_widget_pid}" 2>/dev/null || true
+    kill "${throb_widget_pid}" 2>/dev/null || true
+    wait "${throb_widget_pid}" 2>/dev/null || true
     printf '\b \b' >&2  # back onto the frame column, blank it, then back up again so the cursor rests there
-    _throb_widget_pid=""
+    throb_widget_pid=""
     return 0
 }
 
