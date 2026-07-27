@@ -1,11 +1,13 @@
-# bash-throb-widget CHANGELOG
+# throb-widget CHANGELOG
 
 [^format]
 
 ## [Unreleased]
 
 ### Added
-- nothing yet
+- `get_throb_frame`, a single-character throb generator with a Unicode/ASCII fallback pair
+- `start_throb` / `stop_throb`, a background async pair for animating while the caller is blocked on a foreground command
+- `throb-widget-demo.sh`, a 10-second demo of the throb widget
 
 ### Changed
 - nothing yet
@@ -22,7 +24,7 @@
 ### Security
 - nothing yet
 
-[Unreleased]: https://github.com/kami-lel/bash-throb-widget/compare/54fce07...HEAD
+[Unreleased]: https://github.com/kami-lel/throb-widget/compare/54fce07...HEAD
 
 
 

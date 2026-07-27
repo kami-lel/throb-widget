@@ -1,4 +1,4 @@
-# bash-throb-widget README
+# throb-widget README
 
 a tiny bash utility for a single-character "throb" (pulsing) animation —
 drop one character into any line of output to show a long-running program
@@ -10,28 +10,36 @@ is still alive.
 - Unicode frame set for modern terminals, with an ASCII fallback for anything else
 - ships as one file — source it, or copy its full contents straight into your own script
 
-## Status
-
-this project is in early scaffolding. [bash-throb-widget.sh](bash-throb-widget.sh)
-is currently an empty placeholder — the animation logic is planned but not
-yet implemented. See [CONTEXT.md](CONTEXT.md) for the planned design.
-
 ## Usage
 
-*bash-throb-widget* is meant to be used in either of two ways:
+*throb-widget* is meant to be used in either of two ways:
 
-- **source it** — `source bash-throb-widget.sh` from your own script
-- **inline it** — copy the full contents of [bash-throb-widget.sh](bash-throb-widget.sh) into your own script
+- **source it** — `source throb-widget.sh` from your own script
+- **inline it** — copy the full contents of [throb-widget.sh](throb-widget.sh) into your own script
 
-Once implemented, the frame sets will look like this:
+Call the generator inline, in a loop you control:
 
 ```bash
-FRAMES_PULSE=('░' '▒' '▓' '█' '▓' '▒')
-FRAMES_PULSE_ASCII=('.' 'o' 'O' '@' 'O' 'o')
+while true; do
+    printf '\r'
+    get_throb_frame  # call directly, "$(get_throb_frame)" would run it in a subshell and lose the frame index
+    sleep 0.1
+done
 ```
+
+Or run it in the background while a foreground command blocks:
+
+```bash
+start_throb 0.1   # animates on stderr
+curl -s "$url" > /dev/null
+stop_throb
+```
+
+See [throb-widget-demo.sh](throb-widget-demo.sh) for a runnable demo.
 
 ## Project Structure
 
 | file | purpose |
 | --- | --- |
-| [bash-throb-widget.sh](bash-throb-widget.sh) | the entire utility |
+| [throb-widget.sh](throb-widget.sh) | the entire utility |
+| [throb-widget-demo.sh](throb-widget-demo.sh) | 10-second demo of the throb widget |
